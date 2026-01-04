@@ -55,6 +55,98 @@ Fastapi/
 └── requirements.txt     # Dependencies
 ```
 
+### Arsitektur Sistem
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        Client["HTTP Client<br/>(Browser/Postman/curl)"]
+    end
+    
+    subgraph "FastAPI Application"
+        API["FastAPI Server<br/>Port 8000"]
+        Routes["API Routes"]
+        
+        subgraph "Services"
+            Driver["Driver Service<br/>ChromeDriver"]
+            Scraper["Scraper Service<br/>Web Scraping"]
+            Sentiment["Sentiment Service<br/>NLP Analysis"]
+        end
+        
+        subgraph "Configuration"
+            DeviceConfig["Device Config<br/>CUDA/MPS/CPU"]
+            NewsConfig["News Sources<br/>15 Media"]
+        end
+    end
+    
+    subgraph "External"
+        Chrome["Chrome<br/>Headless"]
+        Model["DistilBERT<br/>Model"]
+        News["News<br/>Websites"]
+    end
+    
+    subgraph "Output"
+        CSV["CSV File"]
+        JSON["JSON Response"]
+    end
+    
+    Client -->|HTTP Request| API
+    API --> Routes
+    Routes --> Driver
+    Routes --> Scraper
+    Routes --> Sentiment
+    
+    Driver --> Chrome
+    Scraper --> Chrome
+    Chrome --> News
+    
+    Sentiment --> Model
+    
+    DeviceConfig -.-> Sentiment
+    NewsConfig -.-> Scraper
+    
+    Sentiment --> CSV
+    Routes --> JSON
+    JSON --> Client
+```
+
+### Flow Analisis Sentimen
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant API
+    participant Scraper
+    participant Chrome
+    participant Sentiment
+    participant Model
+    
+    Client->>API: GET /analyze/{keyword}
+    API->>API: Check service ready
+    
+    loop For each news source
+        API->>Scraper: scrape_headlines()
+        Scraper->>Chrome: Navigate to URL
+        Chrome-->>Scraper: Extract headlines
+        Scraper-->>API: Return headlines
+    end
+    
+    API->>Sentiment: analyze_data()
+    
+    loop For each headline
+        Sentiment->>Model: Analyze sentiment
+        Model-->>Sentiment: Label + Score
+    end
+    
+    Sentiment->>Sentiment: Generate statistics
+    Sentiment->>Sentiment: Save to CSV
+    Sentiment-->>API: Return results
+    API-->>Client: JSON Response
+```
+
+> 📚 **Dokumentasi Lengkap**: Lihat [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) untuk 12 diagram Mermaid yang menjelaskan sistem secara detail.
+
+
 ## 🚀 Quick Start
 
 ### Prerequisites
