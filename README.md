@@ -4,7 +4,6 @@ API analisis sentimen berita Indonesia menggunakan FastAPI, Selenium, dan Distil
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 🌟 Fitur
 
@@ -658,9 +657,7 @@ lsof -ti:8000 | xargs kill -9
 rm -rf ~/.cache/huggingface/
 ```
 
-## 📝 License
 
-MIT License - lihat file [LICENSE](LICENSE) untuk detail.
 
 ## 👥 Contributing
 
