@@ -1,0 +1,202 @@
+{
+    "keyword": "prabowo",
+    "total_items": 21,
+    "sentiment_summary": {
+        "Positif": {
+            "count": 0,
+            "percentage": 0.0,
+            "examples": []
+        },
+        "Negatif": {
+            "count": 0,
+            "percentage": 0.0,
+            "examples": []
+        },
+        "Netral": {
+            "count": 21,
+            "percentage": 100.0,
+            "examples": [
+                {
+                    "source": "Detik",
+                    "category": "Terpopuler",
+                    "text": "Arahan Prabowo Agar Siswa Kedinasan Turun ke Lokasi Bencana Bantu Korban"
+                },
+                {
+                    "source": "Detik",
+                    "category": "Hiburan",
+                    "text": "Video Penegasan Prabowo Terbuka Terima Bantuan untuk Korban Bencana Sumatera"
+                },
+                {
+                    "source": "Detik",
+                    "category": "Hiburan",
+                    "text": "Video Mensesneg Pastikan Prabowo Kawal Pemulihan Bencana di Sumatera"
+                }
+            ]
+        }
+    },
+    "source_distribution": {
+        "Detik": 10,
+        "Kompas": 1,
+        "Tribunnews": 2,
+        "Viva": 4,
+        "Antara News": 2,
+        "Bisnis.com": 2
+    },
+    "category_distribution": {
+        "Terpopuler": 1,
+        "Hiburan": 9,
+        "Politik": 5,
+        "Ekonomi": 2,
+        "Nasional": 2,
+        "Otomotif": 2
+    },
+    "detailed_results": [
+        {
+            "source": "Detik",
+            "category": "Terpopuler",
+            "text": "Arahan Prabowo Agar Siswa Kedinasan Turun ke Lokasi Bencana Bantu Korban",
+            "sentiment": "Netral",
+            "score": 0.5145731568336487
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video Penegasan Prabowo Terbuka Terima Bantuan untuk Korban Bencana Sumatera",
+            "sentiment": "Netral",
+            "score": 0.502792239189148
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video Mensesneg Pastikan Prabowo Kawal Pemulihan Bencana di Sumatera",
+            "sentiment": "Netral",
+            "score": 0.5070225596427917
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video Prabowo Tinjau Jembatan Bailey Tapanuli Selatan",
+            "sentiment": "Netral",
+            "score": 0.5163236856460571
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video: Kepala BGN Sebut Prabowo Memaklumi Penerima MBG Tak Sampai 82,9 Juta",
+            "sentiment": "Netral",
+            "score": 0.5055674314498901
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video Prabowo: 1,4 Miliar Porsi MBG Dibagikan Sejak Januari 2025",
+            "sentiment": "Netral",
+            "score": 0.5113265514373779
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video: Prabowo Minta Kepala BGN Sediakan Sendok untuk MBG",
+            "sentiment": "Netral",
+            "score": 0.5044525265693665
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video: Catatan PDIP Jelang 1 Tahun Prabowo, Bahas Danantara hingga MBG",
+            "sentiment": "Netral",
+            "score": 0.5019498467445374
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video Prabowo Bicara MBG di Forbes: Jika India Bisa Kenapa Indonesia Tidak?",
+            "sentiment": "Netral",
+            "score": 0.5059276819229126
+        },
+        {
+            "source": "Detik",
+            "category": "Hiburan",
+            "text": "Video Prabowo Sebut Rp 6,6 T Hasil Rampasan Bisa untuk Renovasi 6 Ribu Sekolah",
+            "sentiment": "Netral",
+            "score": 0.50027996301651
+        },
+        {
+            "source": "Kompas",
+            "category": "Politik",
+            "text": "Prabowo Ingin Kirim Murid Sekolah Kedinasan Pulihkan Wilayah Banjir Sumatera",
+            "sentiment": "Netral",
+            "score": 0.5226113796234131
+        },
+        {
+            "source": "Tribunnews",
+            "category": "Ekonomi",
+            "text": "Hadiri Dies Natalis SMPN 1 Lamongan, Wamen Transmigrasi Viva Yoga Singgung Visi SDM Presiden Prabowo",
+            "sentiment": "Netral",
+            "score": 0.5243585705757141
+        },
+        {
+            "source": "Tribunnews",
+            "category": "Ekonomi",
+            "text": "Presiden Prabowo Tinjau Pembangunan Huntara di Aceh, BSN Hadir Dukung Pembiayaan Syariah",
+            "sentiment": "Netral",
+            "score": 0.5209634900093079
+        },
+        {
+            "source": "Viva",
+            "category": "Politik",
+            "text": "Pengamat Politik: Wapres Antara Ada dan Tiada, Jangan Semua Masalah Harus Prabowo yang Tanggung",
+            "sentiment": "Netral",
+            "score": 0.5197006464004517
+        },
+        {
+            "source": "Viva",
+            "category": "Politik",
+            "text": "Survei Poltracking: Kepercayaan Masyarakat Terhadap Pemerintahan Prabowo-Gibran Tinggi, Angkanya 81,5 Persen",
+            "sentiment": "Netral",
+            "score": 0.5284197926521301
+        },
+        {
+            "source": "Viva",
+            "category": "Politik",
+            "text": "Poltracking: 78,1% Masyarakat Puas dengan Kinerja Prabowo-Gibran dalam 1 Tahun",
+            "sentiment": "Netral",
+            "score": 0.5118712782859802
+        },
+        {
+            "source": "Viva",
+            "category": "Politik",
+            "text": "Golkar Puji Satu Tahun Pemerintahan Prabowo-Gibran: Programnya Menyentuh Rakyat",
+            "sentiment": "Netral",
+            "score": 0.5151137113571167
+        },
+        {
+            "source": "Antara News",
+            "category": "Nasional",
+            "text": "Penanganan bencana oleh Prabowo dinilai terstruktur dan sistematis",
+            "sentiment": "Netral",
+            "score": 0.5015947222709656
+        },
+        {
+            "source": "Antara News",
+            "category": "Nasional",
+            "text": "Kemarin, Prabowo beri tugas khusus hingga KPK soal pilkada lewat DPRD",
+            "sentiment": "Netral",
+            "score": 0.5120893716812134
+        },
+        {
+            "source": "Bisnis.com",
+            "category": "Otomotif",
+            "text": "Pemerintahan Prabowo Setop Insentif Mobil Listrik Cs, IESR: Manfaat Ekonomi Rp544 Triliun Hilang",
+            "sentiment": "Netral",
+            "score": 0.5137950778007507
+        },
+        {
+            "source": "Bisnis.com",
+            "category": "Otomotif",
+            "text": "Cita-Cita Mobnas RI: Kandas di Era Jokowi, Bakal Diwujudkan Prabowo?",
+            "sentiment": "Netral",
+            "score": 0.5010548830032349
+        }
+    ]
+}
