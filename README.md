@@ -55,7 +55,9 @@ Fastapi/
 └── requirements.txt     # Dependencies
 ```
 
-### Arsitektur Sistem
+## 📊 Diagram Sistem
+
+### 1. Arsitektur Sistem
 
 ```mermaid
 graph TB
@@ -65,10 +67,10 @@ graph TB
     
     subgraph "FastAPI Application"
         API["FastAPI Server<br/>Port 8000"]
-        Routes["API Routes"]
+        Routes["API Routes<br/>analysis_routes.py"]
         
         subgraph "Services"
-            Driver["Driver Service<br/>ChromeDriver"]
+            Driver["Driver Service<br/>ChromeDriver Management"]
             Scraper["Scraper Service<br/>Web Scraping"]
             Sentiment["Sentiment Service<br/>NLP Analysis"]
         end
@@ -76,18 +78,19 @@ graph TB
         subgraph "Configuration"
             DeviceConfig["Device Config<br/>CUDA/MPS/CPU"]
             NewsConfig["News Sources<br/>15 Media"]
+            Selectors["CSS Selectors<br/>Per Source"]
         end
     end
     
-    subgraph "External"
-        Chrome["Chrome<br/>Headless"]
-        Model["DistilBERT<br/>Model"]
-        News["News<br/>Websites"]
+    subgraph "External Services"
+        Chrome["Chrome Browser<br/>Headless Mode"]
+        HuggingFace["HuggingFace<br/>DistilBERT Model"]
+        NewsWebsites["News Websites<br/>Detik, Kompas, CNN, etc."]
     end
     
     subgraph "Output"
-        CSV["CSV File"]
-        JSON["JSON Response"]
+        CSV["CSV File<br/>data_{keyword}_news_nlp.csv"]
+        JSON["JSON Response<br/>API Response"]
     end
     
     Client -->|HTTP Request| API
@@ -98,53 +101,252 @@ graph TB
     
     Driver --> Chrome
     Scraper --> Chrome
-    Chrome --> News
+    Chrome --> NewsWebsites
     
-    Sentiment --> Model
+    Sentiment --> HuggingFace
     
-    DeviceConfig -.-> Sentiment
-    NewsConfig -.-> Scraper
+    DeviceConfig -.->|Configure| Sentiment
+    NewsConfig -.->|URLs| Scraper
+    Selectors -.->|CSS| Scraper
     
     Sentiment --> CSV
     Routes --> JSON
-    JSON --> Client
+    JSON -->|HTTP Response| Client
 ```
 
-### Flow Analisis Sentimen
+### 2. Flow Analisis Sentimen
 
 ```mermaid
 sequenceDiagram
     participant Client
     participant API
+    participant Routes
+    participant Driver
     participant Scraper
-    participant Chrome
     participant Sentiment
+    participant Chrome
+    participant News
     participant Model
     
     Client->>API: GET /analyze/{keyword}
-    API->>API: Check service ready
+    API->>Routes: Route request
+    Routes->>Routes: get_sentiment_service()
+    
+    Note over Routes: Initialize services
     
     loop For each news source
-        API->>Scraper: scrape_headlines()
+        Routes->>Scraper: scrape_headlines(url, source, category)
+        Scraper->>Driver: Get driver instance
+        Driver-->>Scraper: Chrome driver
         Scraper->>Chrome: Navigate to URL
-        Chrome-->>Scraper: Extract headlines
-        Scraper-->>API: Return headlines
+        Chrome->>News: HTTP Request
+        News-->>Chrome: HTML Response
+        Chrome-->>Scraper: Page loaded
+        Scraper->>Scraper: Scroll & extract headlines
+        Scraper-->>Routes: List of headlines
     end
     
-    API->>Sentiment: analyze_data()
+    Routes->>Sentiment: analyze_data(headlines, keyword)
+    
+    Note over Sentiment: Filter by keyword
     
     loop For each headline
         Sentiment->>Model: Analyze sentiment
         Model-->>Sentiment: Label + Score
+        Sentiment->>Sentiment: Classify (Positif/Negatif/Netral)
     end
     
     Sentiment->>Sentiment: Generate statistics
     Sentiment->>Sentiment: Save to CSV
-    Sentiment-->>API: Return results
-    API-->>Client: JSON Response
+    Sentiment-->>Routes: Analysis results
+    Routes-->>API: JSON response
+    API-->>Client: HTTP 200 + JSON
 ```
 
-> 📚 **Dokumentasi Lengkap**: Lihat [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) untuk 12 diagram Mermaid yang menjelaskan sistem secara detail.
+### 3. Proses Scraping Detail
+
+```mermaid
+flowchart TD
+    Start([Start Scraping]) --> Init[Initialize ChromeDriver<br/>with headless options]
+    Init --> Loop{For each<br/>news source?}
+    
+    Loop -->|Yes| Navigate[Navigate to URL]
+    Navigate --> Wait[Wait for page load<br/>WebDriverWait 10s]
+    Wait --> Scroll[Scroll page<br/>3 times, 2s each]
+    
+    Scroll --> TrySelectors{Try CSS<br/>selectors}
+    TrySelectors -->|Class name| FindClass[Find by CLASS_NAME]
+    TrySelectors -->|Tag name| FindTag[Find by TAG_NAME]
+    
+    FindClass --> Check{Headlines<br/>found?}
+    FindTag --> Check
+    
+    Check -->|Yes| Extract[Extract text<br/>from elements]
+    Check -->|No| NextSelector{More<br/>selectors?}
+    
+    NextSelector -->|Yes| TrySelectors
+    NextSelector -->|No| NoData[⚠ No data found]
+    
+    Extract --> Success[✓ Headlines extracted]
+    Success --> Loop
+    NoData --> Loop
+    
+    Loop -->|No| Return[Return all headlines]
+    Return --> End([End])
+    
+    style Success fill:#90EE90
+    style NoData fill:#FFB6C1
+```
+
+### 4. Analisis Sentimen Detail
+
+```mermaid
+flowchart TD
+    Start([Receive headlines]) --> Filter[Filter by keyword<br/>case-insensitive]
+    Filter --> Check{Headlines<br/>found?}
+    
+    Check -->|No| NoData[Return: No data message]
+    Check -->|Yes| Prepare[Prepare texts<br/>truncate to 512 chars]
+    
+    Prepare --> Batch[Batch process with<br/>DistilBERT model]
+    
+    Batch --> Loop{For each<br/>result}
+    
+    Loop --> Classify{Classify<br/>sentiment}
+    Classify -->|POSITIVE & score>0.6| Pos[Sentiment: Positif]
+    Classify -->|NEGATIVE & score>0.6| Neg[Sentiment: Negatif]
+    Classify -->|Otherwise| Neu[Sentiment: Netral]
+    
+    Pos --> Count[Update counters]
+    Neg --> Count
+    Neu --> Count
+    
+    Count --> Store[Store detailed result]
+    Store --> Loop
+    
+    Loop -->|Done| Stats[Calculate statistics:<br/>- Counts<br/>- Percentages<br/>- Examples]
+    
+    Stats --> CSV[Export to CSV<br/>source,category,text,sentiment,score]
+    CSV --> Response[Build JSON response]
+    Response --> End([Return response])
+    
+    NoData --> End
+    
+    style Pos fill:#90EE90
+    style Neg fill:#FFB6C1
+    style Neu fill:#87CEEB
+```
+
+### 5. Device Detection Flow
+
+```mermaid
+flowchart TD
+    Start([Detect Device]) --> CheckCUDA{CUDA<br/>available?}
+    
+    CheckCUDA -->|Yes| UseCUDA[Device: CUDA<br/>Index: 0<br/>Name: GPU name]
+    CheckCUDA -->|No| CheckMPS{MPS<br/>available?}
+    
+    CheckMPS -->|Yes| UseMPS[Device: MPS<br/>Index: 0<br/>Name: Apple Silicon]
+    CheckMPS -->|No| UseCPU[Device: CPU<br/>Index: -1<br/>Name: CPU]
+    
+    UseCUDA --> Return[Return device config]
+    UseMPS --> Return
+    UseCPU --> Return
+    
+    Return --> End([End])
+    
+    style UseCUDA fill:#90EE90
+    style UseMPS fill:#87CEEB
+    style UseCPU fill:#FFD700
+```
+
+### 6. Data Model
+
+```mermaid
+erDiagram
+    RESPONSE ||--o{ DETAILED_RESULT : contains
+    RESPONSE ||--|| SENTIMENT_SUMMARY : has
+    RESPONSE ||--|| SOURCE_DISTRIBUTION : has
+    RESPONSE ||--|| CATEGORY_DISTRIBUTION : has
+    
+    RESPONSE {
+        string keyword
+        int total_items
+        object sentiment_summary
+        object source_distribution
+        object category_distribution
+        array detailed_results
+    }
+    
+    DETAILED_RESULT {
+        string source
+        string category
+        string text
+        string sentiment
+        float score
+    }
+    
+    SENTIMENT_SUMMARY {
+        int Positif_count
+        float Positif_percentage
+        array Positif_examples
+        int Negatif_count
+        float Negatif_percentage
+        array Negatif_examples
+        int Netral_count
+        float Netral_percentage
+        array Netral_examples
+    }
+    
+    SOURCE_DISTRIBUTION {
+        int Detik
+        int Kompas
+        int CNN_Indonesia
+        int others
+    }
+    
+    CATEGORY_DISTRIBUTION {
+        int Politik
+        int Ekonomi
+        int Olahraga
+        int others
+    }
+```
+
+### 7. Error Handling
+
+```mermaid
+flowchart TD
+    Request[HTTP Request] --> Validate{Request<br/>valid?}
+    
+    Validate -->|No| Error400[HTTP 400<br/>Bad Request]
+    Validate -->|Yes| CheckService{Service<br/>ready?}
+    
+    CheckService -->|No| Error503[HTTP 503<br/>Service Unavailable]
+    CheckService -->|Yes| Process[Process Request]
+    
+    Process --> Scrape{Scraping<br/>success?}
+    Scrape -->|Timeout| Warn[⚠ Log timeout<br/>Continue with others]
+    Scrape -->|Error| Warn2[⚠ Log error<br/>Continue with others]
+    Scrape -->|Success| Collect[Collect headlines]
+    
+    Warn --> Collect
+    Warn2 --> Collect
+    
+    Collect --> Analyze{Analysis<br/>success?}
+    Analyze -->|Error| Error500[HTTP 500<br/>Internal Server Error]
+    Analyze -->|Success| Response[HTTP 200<br/>Success Response]
+    
+    Error400 --> End([End])
+    Error503 --> End
+    Error500 --> End
+    Response --> End
+    
+    style Error400 fill:#FFB6C1
+    style Error503 fill:#FFB6C1
+    style Error500 fill:#FFB6C1
+    style Response fill:#90EE90
+```
 
 
 ## 🚀 Quick Start
